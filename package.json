@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "[![Actions Status](https://github.com/susorovpp/frontend-project-46/workflows/hexlet-check/badge.svg)](https://github.com/susorovpp/frontend-project-46/actions)",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,6 +16,12 @@
     "url": "https://github.com/susorovpp/frontend-project-46/issues"
   },
   "homepage": "https://github.com/susorovpp/frontend-project-46#readme",
+  "bin": {
+    "gendiff": "bin/gendiff.js"
+  },
+  "dependencies": {
+    "commander": "10.0.0"
+  },
   "devDependencies": {
     "eslint": "8.38.0",
     "eslint-config-airbnb-base": "15.0.0",
