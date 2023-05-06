@@ -2,9 +2,12 @@
 import path from 'path';
 import fs from 'fs';
 import _ from 'lodash';
+import { fileURLToPath } from 'url';
 
 const readFile = (filepath) => {
-  const absolutePath = path.resolve(process.cwd(), filepath);
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const absolutePath = path.resolve(__dirname, filepath);
   const content = fs.readFileSync(absolutePath, 'utf-8');
   return JSON.parse(content);
 };
