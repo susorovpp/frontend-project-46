@@ -9,3 +9,11 @@ publish:
 
 lint:
 	npx eslint .
+
+test:
+	npm test
+
+report:
+	npm run coverage
+
+.PHONY: test

@@ -4,7 +4,13 @@ import fs from 'fs';
 import _ from 'lodash';
 import { fileURLToPath } from 'url';
 
-const readFile = (filepath) => {
+/**
+ * Reads the content of a JSON file and returns it as an object.
+ *
+ * @param {string} filepath - The relative file path to the JSON file.
+ * @returns {Object} The parsed content of the JSON file.
+ */
+export const readFile = (filepath) => {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
   const absolutePath = path.resolve(__dirname, filepath);
@@ -13,15 +19,15 @@ const readFile = (filepath) => {
 };
 
 /**
- * Compares two configuration files and shows a difference
- * @param filepath1
- * @param filepath2
- * @param format
- * @returns {string}
+ * Compares two configuration files and shows a difference.
+ *
+ * @param {string} filePath1 - The relative file path to the first configuration file.
+ * @param {string} filePath2 - The relative file path to the second configuration file.
+ * @returns {string} A string representation of the differences between the two configuration files.
  */
-export default (filepath1, filepath2, format) => {
-  const data1 = readFile(filepath1);
-  const data2 = readFile(filepath2);
+export const genDiff = (filePath1, filePath2) => {
+  const data1 = readFile(filePath1);
+  const data2 = readFile(filePath2);
 
   const keys = _.union(Object.keys(data1), Object.keys(data2));
   const sortedKeys = _.sortBy(keys);
