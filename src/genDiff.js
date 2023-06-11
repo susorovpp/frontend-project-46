@@ -1,33 +1,17 @@
 // @ts-check
-import path from 'path';
-import fs from 'fs';
 import _ from 'lodash';
-import { fileURLToPath } from 'url';
-
-/**
- * Reads the content of a JSON file and returns it as an object.
- *
- * @param {string} filepath - The relative file path to the JSON file.
- * @returns {Object} The parsed content of the JSON file.
- */
-export const readFile = (filepath) => {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-  const absolutePath = path.resolve(__dirname, filepath);
-  const content = fs.readFileSync(absolutePath, 'utf-8');
-  return JSON.parse(content);
-};
+import { readFile } from '../utils/index.js';
 
 /**
  * Compares two configuration files and shows a difference.
  *
- * @param {string} filePath1 - The relative file path to the first configuration file.
- * @param {string} filePath2 - The relative file path to the second configuration file.
+ * @param {string} filePath1 - The absolute/relative file path to the first configuration file.
+ * @param {string} filePath2 - The absolute/relative file path to the second configuration file.
  * @returns {string} A string representation of the differences between the two configuration files.
  */
-export const genDiff = (filePath1, filePath2) => {
-  const data1 = readFile(filePath1);
-  const data2 = readFile(filePath2);
+const genDiff = (filePath1, filePath2) => {
+  const data1 = JSON.parse(readFile(filePath1));
+  const data2 = JSON.parse(readFile(filePath2));
 
   const keys = _.union(Object.keys(data1), Object.keys(data2));
   const sortedKeys = _.sortBy(keys);
@@ -53,3 +37,5 @@ export const genDiff = (filePath1, filePath2) => {
 
   return `{\n  ${result.join('\n  ')}\n}`;
 };
+
+export default genDiff;
