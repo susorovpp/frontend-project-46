@@ -1,5 +1,7 @@
 import _ from 'lodash';
-import { readFile } from '../utils/index.js';
+import path from 'path';
+
+import { readFile, getParser } from '../utils/index.js';
 
 /**
  * Compares two configuration files and shows a difference.
@@ -9,8 +11,17 @@ import { readFile } from '../utils/index.js';
  * @returns {string} A string representation of the differences between the two configuration files.
  */
 const genDiff = (filePath1, filePath2) => {
-  const data1 = JSON.parse(readFile(filePath1));
-  const data2 = JSON.parse(readFile(filePath2));
+  const format1 = path.extname(filePath1);
+  const format2 = path.extname(filePath2);
+
+  if (format1 !== format2) {
+    throw new Error('Files should have similar format');
+  }
+
+  const parse = getParser(format1);
+
+  const data1 = parse(readFile(filePath1));
+  const data2 = parse(readFile(filePath2));
 
   const keys = _.union(Object.keys(data1), Object.keys(data2));
   const sortedKeys = _.sortBy(keys);
