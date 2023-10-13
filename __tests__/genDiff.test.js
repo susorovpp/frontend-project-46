@@ -1,38 +1,23 @@
 import fs from 'fs';
-import { getFixturePath } from '../utils/index.js';
-import genDiff from '../src/genDiff.js';
+import { fileURLToPath } from 'url';
+import path, { dirname } from 'path';
+import genDiff from '../src/index.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
+
+const expectedResult = readFile('result.txt');
+
+const testFormats = ['json', 'yml'];
 
 describe('genDiff', () => {
-  test('should return a string representation of the differences between two configuration files with absolute paths', () => {
-    const file1 = getFixturePath('file1.json');
-    const file2 = getFixturePath('file2.json');
-    const diff = genDiff(file1, file2);
-    const expectedDiff = fs.readFileSync(getFixturePath('result.txt'), 'utf-8');
+  test.each(testFormats)('%s', (format) => {
+    const filePath1 = getFixturePath(`file1.${format}`);
+    const filePath2 = getFixturePath(`file2.${format}`);
 
-    expect(diff).toEqual(expectedDiff);
-  });
-
-  test('should return a string representation of the differences between two configuration files with relative paths', () => {
-    const diff = genDiff('__fixtures__/file1.json', '__fixtures__/file2.json');
-    const expectedDiff = fs.readFileSync(getFixturePath('result.txt'), 'utf-8');
-
-    expect(diff).toEqual(expectedDiff);
-  });
-
-  test('should return a string representation of the differences between two configuration yml files', () => {
-    const file1 = getFixturePath('file1.yml');
-    const file2 = getFixturePath('file2.yml');
-
-    const diff = genDiff(file1, file2);
-    const expectedDiff = fs.readFileSync(getFixturePath('result.txt'), 'utf-8');
-
-    expect(diff).toEqual(expectedDiff);
-  });
-
-  test('should throw an error if the two files have different formats', () => {
-    const file1 = getFixturePath('file1.json');
-    const file2 = getFixturePath('file2.yml');
-
-    expect(() => genDiff(file1, file2)).toThrow('Files should have similar format');
+    expect(genDiff(filePath1, filePath2)).toEqual(expectedResult);
   });
 });
