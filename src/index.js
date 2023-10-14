@@ -16,13 +16,13 @@ const readFile = (filePath) => {
 /**
  * Compares two configuration files and shows a difference.
  */
-const genDiff = (filePath1, filePath2, outputFormat = 'stylish') => {
+const genDiff = (filePath1, filePath2, formatName = 'stylish') => {
   const data1 = readFile(filePath1);
   const data2 = readFile(filePath2);
 
   const tree = buildTree(data1, data2);
-  // console.dir(tree, { depth: null });
-  return format(tree, outputFormat);
+
+  return format(tree, formatName);
 };
 
 export default genDiff;
