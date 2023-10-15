@@ -1,4 +1,4 @@
-import isObject from 'lodash/isObject';
+import _ from 'lodash';
 
 const SPACES_COUNT = 4;
 const OFFSET_LEFT = 2;
@@ -6,7 +6,7 @@ const OFFSET_LEFT = 2;
 const getIndent = (depth, spaces = SPACES_COUNT) => ' '.repeat((depth * spaces) - OFFSET_LEFT);
 
 const stringify = (value, depth) => {
-  if (!isObject(value)) {
+  if (!_.isObject(value)) {
     return String(value);
   }
 

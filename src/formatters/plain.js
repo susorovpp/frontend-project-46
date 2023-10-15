@@ -1,37 +1,41 @@
-import isPlainObject from 'lodash/isPlainObject';
+import _ from 'lodash';
 
 const formatNode = (value) => {
-  if (isPlainObject(value)) {
+  if (_.isPlainObject(value)) {
     return '[complex value]';
   }
 
-  if (value === null || typeof value === 'boolean') {
-    return value;
+  if (typeof value === 'string') {
+    return `'${value}'`;
   }
-  return `'${value}'`;
+  return value;
 };
 
 const getFormatPlain = (tree) => {
-  const iter = (nodes, prevPath = []) => nodes.map((node) => {
-    const path = `${[...prevPath, node.key].join('.')}`;
+  const iter = (nodes, prevPath = []) => {
+    const lines = nodes.map((node) => {
+      const path = `${[...prevPath, node.key].join('.')}`;
 
-    switch (node.type) {
-      case 'added':
-        return `Property '${path}' was added with value: ${formatNode(node.value)}\n`;
-      case 'removed':
-        return `Property '${path}' was removed\n`;
-      case 'unchanged':
-        return '';
-      case 'changed':
-        return `Property '${path}' was updated. From ${formatNode(node.value1)} to ${formatNode(node.value2)}\n`;
-      case 'nodes':
-        return iter(node.children, [path]).join('');
-      default:
-        throw new Error(`Unknown type: ${node.type} in node: '${path}'`);
-    }
-  });
+      switch (node.type) {
+        case 'added':
+          return `Property '${path}' was added with value: ${formatNode(node.value)}`;
+        case 'removed':
+          return `Property '${path}' was removed`;
+        case 'unchanged':
+          return null;
+        case 'changed':
+          return `Property '${path}' was updated. From ${formatNode(node.value1)} to ${formatNode(node.value2)}`;
+        case 'nodes':
+          return iter(node.children, [path]);
+        default:
+          throw new Error(`Unknown type: ${node.type} in node: '${path}'`);
+      }
+    }).filter((line) => line !== null);
 
-  return iter(tree).join('');
+    return lines.join('\n').trim();
+  };
+
+  return iter(tree);
 };
 
 export default getFormatPlain;
